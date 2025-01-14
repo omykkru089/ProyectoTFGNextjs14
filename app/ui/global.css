@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+:root{
+  --border-color: linear-gradient(
+    to right,
+    #640F8C 0%, 
+    #0D0D0D 100%
+  );
+}
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+--------------------------------------------------------
+Aqui comienza el css del footer
+--------------------------------------------------------
+*/
+
+
+.footer{
+  background-color: #151515;
+  width: 100%;
+  height: 270px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  bottom: 0vh;
+  box-shadow: 0px 0px 10px #640F8C ;
+}
+
+.footer-container {
+color: white;
+text-decoration: none;
+max-width: 600px;
+width: 100%;
+margin-top: -40px;
+display: grid;
+place-items: center;
+}
+
+.containter{
+display: flex;
+flex-direction: column;
+}
+
+.links{
+  display: flex;
+  flex-direction: row;
+  border-bottom: #9F86C0 1px solid;
+}
+
+.links .list{
+display: flex;
+flex-direction: column;
+}
+
+.links .list ul li{
+  margin-bottom: 10px;
+  width: 200px;
+  padding: 5px;
+  }  
+
+.links .list ul li a:hover{
+  transition: .1s;
+  color: #9F86C0;
+  }  
+
+.links .medias{
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  
+}
+
+.links .medias .link{
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-left: 150px;  
+}
+
+.links .medias .link .icons{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: relative;
+  left: 0px;
+}
+
+.links .medias .link .icons a{
+  border-radius: 100%;
+  padding: 5px;
+  width: 40px;
+  margin-right: 5px;
+}
+
+.links .medias .link .icons a img{
+padding: 2px;
+}
+
+.links .medias .link .icons a:hover{
+  transition: .1s;
+  transform: scale(1.15);
+}
+
+.links .medias .link .icons a:nth-child(1){
+  background-color: rgba(0, 110, 255, 0.5);
+  border-radius: 100%;
+}
+.links .medias .link .icons a:nth-child(2){
+  background-color: rgba(239, 120, 255, 0.5);
+  border-radius: 100%;
+}
+.links .medias .link .icons a:nth-child(3){
+  background-color: rgba(87, 87, 87, 0.5);
+  border-radius: 100%;
+}
+.links .medias .link .icons a:nth-child(4){
+  background-color: rgba(255, 0, 0, 0.5);
+  border-radius: 100%;
+}
+
+.links .medias .link .apps{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  left: -20px;
+}
+
+.links .medias .link .apps a img{
+  width: 100%;
+  position: relative;
+  }
+
+.links .medias .link .apps a img:hover{
+transition: .1s;
+transform: scale(1.05);
+}
+
+
+.links .medias .link .apps a:first-of-type{
+  margin-right: 10px;
+}
+
+.links .medias .link .apps a img{
+  width: 120px;
+}
+
+
+.containter .information{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  bottom: -35px;
+  }
+
+  .containter .information .Copyright{
+    color: grey;
+    display: flex;
+    flex-wrap: nowrap;
+    font-size: 15px;
+    }
+
+.containter .information .moneda-geo{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 20px;
+  }
+
+
+
+.containter .information .moneda-geo svg{
+  display: flex;
+  align-items: center;
+  position: relative;
+  bottom: 0px;
+  left: 5px;
+  width: 20px;
+}
+
+
+
+.containter .information a:hover {
+  transition: .1s;
+  color: #9F86C0;
+  }
+
+
+/*
+--------------------------------------------------------
+Aqui comienza el css del body
+--------------------------------------------------------
+*/
+
+  body{
+    background-color: #0D0D0D;
+
+  }
+
+
+  .main-container{
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    width: 620px;
+    display: grid;
+    place-items: center;
+    background: #1f1f1f;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    box-shadow: 0px 0px 20px #640F8C ;
+  }
+
+
+
+  .main-grid-padre {
+    display: grid;
+    grid-template-columns: 200px 200px 150px;
+    grid-template-rows: 100px 120px 100px;
+    grid-column-gap: 12px;
+    grid-row-gap: 17px;
+    padding: 10px;    
+    }
+    
+    .div1 {
+      grid-column: span 2 / span 2;
+      grid-row: span 2 / span 2;
+      background-color: red;
+      border-radius: 25px;
+  }
+  
+  .div2 {
+      grid-column-start: 1;
+      grid-row-start: 3;
+      background-color: #9F86C0;
+      border-radius: 15px;
+  }
+  
+  .div3 {
+      grid-column-start: 2;
+      grid-row-start: 3;
+      background-color: #9F86C0;
+      border-radius: 15px;
+  }
+  
+  .div4 {
+      grid-column-start: 3;
+      grid-row-start: 3;
+      background-color: #3CCBFF;
+      padding-bottom: 130px;
+      position: relative;
+      top: -30px;
+      border-radius: 15px;
+  }
+  
+  .div5 {
+      grid-column-start: 3;
+      grid-row-start: 2;
+      background-color: #4FFF5A;
+      height: 90px;
+      border-radius: 15px;
+  }
+  
+  .div6 {
+      grid-column-start: 3;
+      grid-row-start: 1;
+      background-color: #FFF703;
+      border-radius: 15px;
+  }
+
+/*
+--------------------------------------------------------
+Aqui comienza el css del header
+--------------------------------------------------------
+*/
+
+
+.menu-completo{
+  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  height: 80px;
+  width: 100%;
+  background: #141414;
+  color: white;
+  filter: drop-shadow( 0px 0px 15px #640F8C )
+}
+.menu-completo img{
+  width: 120px;
+  height: 100px;
+  position: relative;
+  ;
+}
+
+.menu-plataformas {
+  background: linear-gradient(#9F86C034,#9F86C027);
+  backdrop-filter: blur(px);
+  padding: 10px;
+  border-radius: 10px;
+  margin-left: 8vw;
+  width: 350px;
+}
+.menu-plataformas a{
+  margin-inline: 10px;
+  position: relative;
+}
+
+.menu-plataformas a:hover{
+  background: #ffffff75;
+  transition: .1s;
+  transform: scale();
+  border-radius: 5px;
+  position: relative;
+}
+
+.menu-auth a{
+  background: #9f86c070;
+  margin-right: 20px;
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+
+.menu-auth a:hover{
+  transition: .1s;
+  background: #9f86c0d3;
+}
