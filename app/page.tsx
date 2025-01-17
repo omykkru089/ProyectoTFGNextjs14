@@ -12,7 +12,7 @@ export default function Page() {
       <main>
         <Header></Header>
         <Body></Body>
-        <Footer></Footer>
+        
       </main>
        
   );
