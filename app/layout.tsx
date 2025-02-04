@@ -1,5 +1,6 @@
 import './ui/global.css'
 import { Footer } from './ui/footer';
+import SessionAuthProvider from '@/context/SessionAuthProvider';
 
 export default function RootLayout({
   children,
@@ -9,8 +10,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <SessionAuthProvider>
         {children}
-        <Footer></Footer>
+        
+        </SessionAuthProvider>
       </body>
     </html>
   );

@@ -328,8 +328,8 @@ Aqui comienza el css del header
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 20px;
-  padding:10px;
+  width: 100%;
+  gap: 10px;
 }
 .menu-plataformas a:first-child{
   gap: 5px;
@@ -351,10 +351,13 @@ Aqui comienza el css del header
 .menu-plataformas nav a{
 padding: 7px;
 }
+
+
+
 .menu-plataformas img:nth-child(1){
-  width: 20px;
-  height: 20px;
-  margin-top: 3px;
+  width: 15px;
+  height: 15px;
+  margin-top: 6px;
 }
 
 .menu-plataformas a:hover{
@@ -368,14 +371,14 @@ padding: 7px;
   -o-transition: .05s;
 }
 
-.menu-auth a{
+.menu-auth a:nth-child(2){
   background: #9f86c070;
   margin-right: 20px;
   padding: 0.4rem;
   border-radius: 5px;
 }
 
-.menu-auth a:hover{
+.menu-auth a:hover:nth-child(2){
   transition: .1s;
   background: #9f86c0d3;
 }

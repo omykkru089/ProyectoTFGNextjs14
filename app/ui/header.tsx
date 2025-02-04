@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import ButtonAuth from "./ButtonAuth";
 
 export function Header() {
     return (
       <div class="menu-completo">
-        <Image src="/GameShop.png" alt="icono de la web" width={120} height={120}></Image>
+        <Link href="/">
+        <Image src="/GameShop.png" alt="icono de la web" width={120} height={120}></Image></Link>
             <div class="menu-plataformas">
                 <nav >
                     <Link href="#">
@@ -26,8 +28,7 @@ export function Header() {
                 </nav>
             </div>
             <div class="menu-auth">
-                <a href="#">Iniciar Sesión</a>
-                <a href="#">Registrarse</a>
+                <div><ButtonAuth></ButtonAuth></div>
             </div>
       </div>
     );
