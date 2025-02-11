@@ -4,10 +4,10 @@ import ButtonAuth from "./ButtonAuth";
 
 export function Header() {
     return (
-      <div class="menu-completo">
+      <header className="menu-completo">
         <Link href="/">
         <Image src="/GameShop.png" alt="icono de la web" width={120} height={120}></Image></Link>
-            <div class="menu-plataformas">
+            <div className="menu-plataformas">
                 <nav >
                     <Link href="#">
                     <Image src="/iconPC.png" alt="icono de pc" width={20} height={20}></Image>
@@ -27,9 +27,9 @@ export function Header() {
                     </Link>
                 </nav>
             </div>
-            <div class="menu-auth">
+            <div className="menu-auth">
                 <div><ButtonAuth></ButtonAuth></div>
             </div>
-      </div>
+      </header>
     );
   }
