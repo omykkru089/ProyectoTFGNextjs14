@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import { fetchCategorias, fetchDesarrolladores, fetchEditoriales, fetchJuego, fetchPlataforma } from "../lib/data";
 import { barlow,  montserrat,  } from '../ui/fonts';
-import { juego } from "../lib/definitions"; {/*categoria,desarrollador,editorial,plataforma*/}
+import { juego } from "../lib/definitions";
 
 export function Body() {
   const [juegos, setJuegos] = useState<juego[]>([]); // Estado para guardar los datos
@@ -66,7 +66,7 @@ export function Body() {
           {juego.categoria.nombre} {/* Ejemplo: Mostrar el nombre de la categoria */}
           </div>
           <div className="z-100 col-start-3 row-start-2 row-end-6 bg-[#3CCBFF] relative top-[28px] rounded-[15px] h-[160px] [box-shadow:0px_0px_7px_lightblue]">
-          {juego.carrito} {/* Ejemplo: Mostrar el carrito del juego */}
+          <button>{juego.carrito} </button> {/* Ejemplo: Mostrar el carrito del juego */}
           </div>
           </Link>
         </section>

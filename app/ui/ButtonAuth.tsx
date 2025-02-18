@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function ButtonAuth() {
@@ -11,6 +11,7 @@ export default function ButtonAuth() {
   }
 
   if (session) {
+    const isAdmin = session.user?.role === "admin";
     return (
       <>
         Signed in as {session.user?.email}  <br />
@@ -20,11 +21,22 @@ export default function ButtonAuth() {
         >
           Cerrar Sesión
         </button>
+
+        {isAdmin && (
+          <Link href="/admin">
+            <button
+              className="bg-[#9f86c070] mr-[20px] p-[0.35rem] rounded-[5px] hover:[transition:.1s] hover:bg-[#9f86c0d3]"
+            >
+              Panel de Administración
+            </button>
+          </Link>
+        )}
         
         <button id="register" className="hidden"></button>
       </>
     );
   }
+
   return (
     <>
     <Link href={'/login'}>

@@ -87,7 +87,6 @@ export async function fetchJuego() {
     } 
   
     export async function fetchUsuarios() {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
             cache:"no-store",
             method: "GET",
