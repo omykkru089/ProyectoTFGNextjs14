@@ -40,7 +40,6 @@ const handler = NextAuth({
         token.email = user.email;
         token.role = user.role;
         token.token = user.token;
-        
       }
         return {...token, ...user};
         

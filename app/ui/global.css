@@ -312,12 +312,13 @@ Aqui comienza el css del header
   background: linear-gradient(#9F86C034,#9F86C027);
   padding: 10px;
   border-radius: 10px;
-  margin-left: 8vw;
-  width: 32%;
-  height: 45px;
+  width: 400px;
+  height: 30px;
   gap: 20px;
-  display: flex;
-  align-items: center;
+  display: grid;
+  place-content: center;
+  position: relative;
+  right: 40px;
 }
 .menu-plataformas nav {
   padding: 10px;
@@ -367,14 +368,3 @@ padding: 7px;
   -o-transition: .05s;
 }
 
-.menu-auth a:nth-child(2){
-  background: #9f86c070;
-  margin-right: 20px;
-  padding: 0.4rem;
-  border-radius: 5px;
-}
-
-.menu-auth a:hover:nth-child(2){
-  transition: .1s;
-  background: #9f86c0d3;
-}

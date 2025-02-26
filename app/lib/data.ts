@@ -101,4 +101,3 @@ export async function fetchJuego() {
           const data = await res.json();
           return data; // Asegúrate de devolver los datos
     } 
-  

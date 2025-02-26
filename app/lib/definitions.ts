@@ -51,3 +51,16 @@ export type juego = {
     sitio_web: string;
         };
         
+  export type users = {    
+    id: number;
+    nombre: string;
+    email: string;
+    password: string;
+    role: string;
+  };
+
+  export type userslogged = {    
+    token: string
+    email: string
+    role: string
+  };

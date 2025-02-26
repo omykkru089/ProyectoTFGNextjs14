@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchCategorias, fetchDesarrolladores, fetchEditoriales, fetchJuego, fetchPlataforma } from "../lib/data";
 import { barlow,  montserrat,  } from '../ui/fonts';
 import { juego } from "../lib/definitions";
+import GameSkeleton from "../ui/Skeletons/GameSkeleton";
 
 export function Body() {
   const [juegos, setJuegos] = useState<juego[]>([]); // Estado para guardar los datos
@@ -19,11 +20,7 @@ export function Body() {
     const fetchData = async () => {
       try {
         const data = await fetchJuego(); fetchPlataforma(); fetchCategorias(); fetchEditoriales(); fetchDesarrolladores();
-        setJuegos(data); // Guarda los datos en el estado
-        // setCategorias(data); // Guarda los datos en el estado
-        // setDesarrolladores(data); // Guarda los datos en el estado
-        // setEditoriales(data); // Guarda los datos en el estado
-        // setPlataformas(data); // Guarda los datos en el estado
+        setJuegos(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -35,7 +32,7 @@ export function Body() {
   }, []);
 
   if (loading) {
-    return <p>Cargando datos...</p>;
+    return <div className=" grid place-items-center w-full bg-[#0D0D0D]"><div className="flex flex-col p-[10px] bg-[#1f1f1f] w-[590px] pt-[20px] mb-[-20px] "><GameSkeleton/><GameSkeleton/><GameSkeleton/></div></div>
   }
 
   if (error) {
@@ -59,14 +56,14 @@ export function Body() {
           <div className={`${montserrat.className} grid place-items-center text-[#fff] text-3xl font-bold col-start-2 row-start-3 bg-[#9F86C0a4] rounded-[15px] pb-[2px] [box-shadow:0px_0px_7px_#9F86C0]`}>
           {juego.plataforma.nombre} {/* Ejemplo: Mostrar el nombre de la plataforma */}
           </div>
-          <div className={`${barlow.className} grid place-items-center text-[black] text-[35px] col-start-3 row-start-1 bg-[#00ff00]  rounded-[15px] mt-[4.2rem] h-[70px] [box-shadow:0px_0px_7px_green]`}>
+          <div className={`${barlow.className} grid place-items-center text-[white] text-[35px] col-start-3 row-start-1 border-[2px] border-[solid] border-[#00ff00] bg-[#77ff7750] rounded-[15px] mt-[4.35rem] h-[70px] [box-shadow:0px_0px_7px_green] pb-[4px]`}>
           {juego.precio} {/* Ejemplo: Mostrar el precio del juego */}
           </div>
-          <div className={`${barlow.className} grid place-items-center text-[black] text-base font-bold col-start-3 row-start-1 h-[60px] bg-[#FFF703] rounded-[15px] [box-shadow:0px_0px_7px_yellow]`}>
+          <div className={`${barlow.className} grid place-items-center text-[white] text-base font-bold col-start-3 row-start-1 h-[60px] border-[2px] border-[solid] border-[#FFF703] bg-[#fffa6770] rounded-[15px] [box-shadow:0px_0px_7px_yellow] pb-[]`}>
           {juego.categoria.nombre} {/* Ejemplo: Mostrar el nombre de la categoria */}
           </div>
-          <div className="z-100 col-start-3 row-start-2 row-end-6 bg-[#3CCBFF] relative top-[28px] rounded-[15px] h-[160px] [box-shadow:0px_0px_7px_lightblue]">
-          <button>{juego.carrito} </button> {/* Ejemplo: Mostrar el carrito del juego */}
+          <div className="z-100 col-start-3 row-start-2 row-end-6 bg-[#3CCBFF] relative top-[28px] rounded-[15px] h-[155px] [box-shadow:0px_0px_7px_lightblue] grid place-content-center mt-2 pb-[1px] pr-[10px]">
+          <button><img src="/carro-de-la-compra3.png" alt="Icono de carrito" className='w-[100px] h-[100px] '></img>  {juego.carrito} </button> {/* Ejemplo: Mostrar el carrito del juego */}
           </div>
           </Link>
         </section>

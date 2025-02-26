@@ -1,12 +1,13 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import ButtonAuth from "./ButtonAuth";
-
 export function Header() {
+
+
     return (
       <header className="menu-completo">
-        <Link href="/">
-        <Image src="/GameShop.png" alt="icono de la web" width={120} height={120}></Image></Link>
+        <Link href="/"><Image src="/GameShop.png" alt="icono de la web" width={120} height={120}></Image></Link>
             <div className="menu-plataformas">
                 <nav >
                     <Link href="#">
