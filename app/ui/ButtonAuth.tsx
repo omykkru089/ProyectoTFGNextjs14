@@ -16,7 +16,7 @@ export default function ButtonAuth() {
     const isAdmin = session.user?.role === "admin";
     return (
       <div className="flex  items-center justify-center gap-[20px]">
-        {isAdmin && ( <Link href="/admin" className="bg-[#9f86c070] mr-[90px] p-[0.35rem] rounded-[5px] hover:[transition:.1s] hover:bg-[#9f86c0d3] absolute right-[100px]"><button>Administración</button></Link> )}
+        {isAdmin && ( <Link href="/panel-de-administracion" className="bg-[#9f86c070] mr-[90px] p-[0.35rem] rounded-[5px] hover:[transition:.1s] hover:bg-[#9f86c0d3] absolute right-[100px]"><button>Administración</button></Link> )}
         <div className="relative w-[38px] h-[38px] right-[100px] rounded-sm">
           <img src="/carrito-de-compras (1).png" alt="iconcarrito" className="w-full h-full  object-contain relative bottom-[30px]" />
         </div>
