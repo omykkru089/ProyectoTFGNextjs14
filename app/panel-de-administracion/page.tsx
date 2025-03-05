@@ -55,7 +55,7 @@ const Page = () => {
           </header>
     <div className="flex h-screen">
       <nav className="w-[150px] h-[100%] bg-[#edd7fd] p-4 fixed">
-        <ul className="space-y-4 mt-12 relative grid place-content-between h-[93%] w-[100%]">
+        <ul className="space-y-4 mt-12 relative grid place-content-between h-[90%] w-[100%]">
           <li>
             <Link href="/sobre-mi">
               <div className="block p-2 w-[100%] hover:bg-[#A167D8] hover:text-white rounded">Sobre Mi</div>

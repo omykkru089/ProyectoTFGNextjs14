@@ -102,7 +102,7 @@ const SobreMiPage = () => {
             <Link href="/"><Image src="/GameShop.png" alt="icono de la web" width={400} height={400} className='w-[110px] h-[90px] relative  top-[-20px]'></Image></Link>
             <h1 className='text-white absolute right-[32px] top-[1.5%]'>{user.nombre}</h1>
           </header>
-          <main className='flex h-[93.2%] w-full'>
+          <main className='flex h-[93.5%] w-full'>
             <nav className=' w-[150px] h-[98.6%] bg-[#ECE4F9] pt-[10px] grid'>
               <Link href="/" className='flex self-start font-semibold  hover:bg-[#edd7fd] hover:text-[#A167D8] md:flex-none md:justify-start md:p-2 md:px-3'><HomeIcon className='h-5 w-5 mr-1' />Home</Link>
               <Link href="#" className='flex self-end text-sm font-semibold  hover:bg-[#edd7fd] hover:text-[#A167D8] md:flex-none md:justify-start md:p-2 md:px-3'>

@@ -1,12 +1,4 @@
 
-.module{
-    position: relative;
-    left: 2.5vw;
-    top: 20px;
-    width: 150px;
-    height: 20px;
-    margin-right: 20px;
-}
 
 
 .module .trigger{
@@ -23,7 +15,7 @@
     min-width: 0px;
     height: 44px;
     padding: 0 18px;
-    z-index: 1;
+    z-index: 10;
     cursor: pointer;
     border-radius: 0.5rem;
     transition: 350ms border-radius 700ms, 700ms color 700ms, 350ms min-width 700ms;
@@ -118,4 +110,13 @@
     }
     
     
+    .module{
+        position: relative;
+        left: 2.5vw;
+        top: 20px;
+        width: 150px;
+        height: 20px;
+        margin-right: 20px;
+        padding: 200px;
+    }
     

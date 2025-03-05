@@ -5,21 +5,27 @@
     width: 0px;
     height: 20px;
     margin-top: 0px;
+    z-index: 20;
 }
 
 
 .module .trigger{
     position: relative;
     border-radius: 5px;
-    }
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
 
     
     .module .trigger ul.locations{
-        position: absolute;
+        position: absolute  ;
         list-style: none;
         margin: 10px;
         padding: 0;
         right: -60px;
+        bottom: 12%;
         background: rgba(229, 185, 255, 0.705);
         border-radius: 0 0 22px 22px;
         font-size: 14px;
