@@ -2,8 +2,8 @@ export type juego = {
   id:number;
   nombre: string;
   descripcion: string;
-  categoria?: string;
-  plataforma?: string;
+  categoria?: { id: number; nombre: string };
+  plataforma?: { id: number; nombre: string };
   precio: string;
   fecha_de_lanzamiento?: string;
   desarrollador: string;
@@ -64,3 +64,21 @@ export type juego = {
     email: string
     role: string
   };
+
+  export type CartItem = {
+    id: number
+    pedido: {
+      id: number
+    }
+    juegos: juego
+    cantidad: number
+  }
+  
+export type pedido = {
+  id: number
+  user: {
+    id: number
+  }
+  fecha_creacion: Date
+  estado: string
+}

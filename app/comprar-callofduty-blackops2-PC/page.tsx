@@ -48,52 +48,38 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className='flex align-items-center justify-items-stretch'>
-              <div className="module">
-                  <div className="trigger">
-                    <span>Plataformas</span>
-                    <ul className="locations">
-                      <li><Link href="#">PC</Link></li>
-                      <li><Link href="#">Xbox</Link></li>
-                      <li><Link href="#">Playstation</Link></li>
+              <nav className="text-white pt-4 flex justify-around mb-[-40px]">
+                <ul className="flex items-center space-x-6 w-[120px] bg-[#ddbbf770] p-2 rounded-t-md">
+                   {/* <!-- Menú dropdown de Plataforma --> */}
+                  <li className="relative group">
+                    <Link href="#" className="flex items-center hover:text-gray-300">
+                      Plataforma
+                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                     </svg>
+                    </Link>
+                    <ul className="absolute z-20 left-[-7.5%] w-[135.5px] hidden bg-[#ddbbf770] rounded-b-md shadow-lg group-hover:block">
+                      <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790]">Xbox</Link></li>
+                      <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790]">PC</Link></li>
+                      <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790] rounded-b-md">PlayStation</Link></li>
                     </ul>
-                   </div>
-                </div>
-                <div className="module">
-                  <div className="trigger">
-                    <span>Ediciones</span>
-                    <ul className="locations">
-                      <li><Link href="#">Standard Edition</Link></li>
+                  </li>
+                </ul>
+                <ul className="flex items-center space-x-6 w-[120px] bg-[#ddbbf770] p-2 rounded-t-md">
+                   {/* <!-- Menú dropdown de Plataforma --> */}
+                  <li className="relative group">
+                    <Link href="#" className="flex items-center hover:text-gray-300">
+                      Ediciones
+                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                     </svg>
+                    </Link>
+                    <ul className="absolute z-20 left-[-8.7%]  w-[135.5px] hidden pt-0 bg-[#ddbbf770] rounded-b-md  shadow-lg group-hover:block">
+                      <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790] rounded-b-md">Standard</Link></li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-              
-
-<button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Dropdown button <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-</svg>
-</button>
-
-<div id="dropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      <li>
-        <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-      </li>
-      <li>
-        <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-      </li>
-      <li>
-        <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-      </li>
-      <li>
-        <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
-      </li>
-    </ul>
-</div>
-
-
-              
+                  </li>
+                </ul>
+              </nav>              
               <div className=' relative flex justify-center text-[#19ff38] text-3xl font-bold top-14 mb-[15px] border-[1px] rounded-lg pb-[2px] border-green-300 w-[85px] left-[40%] '><span className='[filter:drop-shadow(0px_0px_4px_green)]'>60€</span></div>
               <div className='grid place-content-center relative top-[24%]'><button className="w-80 text-[#fff] cursor-pointer border-[1px] border-[solid] border-[black] rounded-[4px] px-[0.3em] py-[0.3em] bg-[black] [transition:0.2s] mt-[-15px] hover:-translate-x-[0] hover:-translate-y-1 hover:bg-[#DDBBF7] hover:[box-shadow:0_0.25rem_#000] active:translate-x-[0] active:[box-shadow:none]">Comprar Ahora!</button></div>
     

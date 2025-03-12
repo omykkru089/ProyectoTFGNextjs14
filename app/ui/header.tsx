@@ -2,6 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import ButtonAuth from "./ButtonAuth";
+
+
 export function Header() {
 
 

@@ -8,7 +8,6 @@ const handler = NextAuth({
           credentials: {
             email: { label: "Email", type: "text", placeholder: "example@example.com" },
             password: { label: "Password", type: "password" },
-            role: { label: "Role", type: "text" }
           },
           async authorize(credentials, req) {
             const res = await fetch(
@@ -18,7 +17,6 @@ const handler = NextAuth({
                   body: JSON.stringify({
                     email: credentials?.email,
                     password: credentials?.password,
-                    role: credentials?.role,
                   }),
                   headers: { "Content-Type": "application/json" },
                 }
@@ -37,6 +35,7 @@ const handler = NextAuth({
       // jwt() se ejecuta cada vez que se crea o actualiza un token JWT. Aqui se puede agregar propiedades personalizadas al token.
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.email = user.email;
         token.role = user.role;
         token.token = user.token;
@@ -47,6 +46,7 @@ const handler = NextAuth({
     // session() se utiliza para agregar la informacion del token a la sesion del usuario. lo que hace que esté disponible en el cliente.
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.id as number;
         session.user.email = token.email as string;
         session.user.role = token.role as string ;
         session.user.token = token.token as string;

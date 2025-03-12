@@ -1,18 +1,27 @@
+import { CartProvider } from '@/context/cart-context';
 import './ui/global.css'
-import { Footer } from './ui/footer';
 import SessionAuthProvider from '@/context/SessionAuthProvider';
+import { NotificationProvider } from './ui/notification';
+import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "GameShop",
+  description: "Tienda online de juegos" 
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body>
         <SessionAuthProvider>
-        {children}
-        
+          <NotificationProvider>
+          <CartProvider>{children}</CartProvider>\
+          </NotificationProvider>
         </SessionAuthProvider>
       </body>
     </html>
