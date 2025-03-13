@@ -4,7 +4,7 @@ export type juego = {
   descripcion: string;
   categoria?: { id: number; nombre: string };
   plataforma?: { id: number; nombre: string };
-  precio: string;
+  precio: number;
   fecha_de_lanzamiento?: string;
   desarrollador: string;
   editorial: string;
@@ -70,7 +70,12 @@ export type juego = {
     pedido: {
       id: number
     }
-    juegos: juego
+    juego: {
+      id: number
+      nombre: string
+      precio: number
+      imagen_de_portada: string
+    }
     cantidad: number
   }
   

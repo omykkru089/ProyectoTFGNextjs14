@@ -10,6 +10,11 @@ export default function ButtonAuth() {
 
   const { items, saveCart } = useCart()
 
+const handleSignOut = async () => {
+    await signOut();
+    window.location.href = '/'; // Redirigir a la pantalla de inicio
+  };
+
   const itemCount = items.reduce((sum, item) => sum + item.cantidad, 0)
   const { data: session, status } = useSession();
 
@@ -41,7 +46,7 @@ export default function ButtonAuth() {
               <ul className="absolute z-20 right-0 mt-[14px] w-[135.5px] hidden bg-[#ddbbf770] rounded-b-md shadow-lg group-hover:block">
                 <li><div className="block px-4 py-2 ">{session.user?.email}</div></li>
                 <li><Link href="/sobre-mi" className="block px-4 py-2 hover:bg-[#ddbbf790]">Sobre mi</Link></li>
-                <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790] rounded-b-md"><button onClick={() => signOut()}>Cerrar Sesión</button></Link></li>
+                <li><Link href="#" className="block px-4 py-2 hover:bg-[#ddbbf790] rounded-b-md"><button onClick={handleSignOut}>Cerrar Sesión</button></Link></li>
               </ul>
             </li>
           </ul>

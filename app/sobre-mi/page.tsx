@@ -103,7 +103,7 @@ const SobreMiPage = () => {
             <h1 className='text-white absolute right-[32px] top-[1.5%]'>{user.nombre}</h1>
           </header>
           <main className='flex h-[93.5%] w-full'>
-            <nav className=' w-[150px] h-[98.6%] bg-[#ECE4F9] pt-[10px] grid'>
+            <nav className=' w-[150px] h-[100%] bg-[#ECE4F9] pt-[10px] grid'>
               <Link href="/" className='flex self-start font-semibold  hover:bg-[#edd7fd] hover:text-[#A167D8] md:flex-none md:justify-start md:p-2 md:px-3'><HomeIcon className='h-5 w-5 mr-1' />Home</Link>
               <Link href="#" className='flex self-end text-sm font-semibold  hover:bg-[#edd7fd] hover:text-[#A167D8] md:flex-none md:justify-start md:p-2 md:px-3'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" /></svg>

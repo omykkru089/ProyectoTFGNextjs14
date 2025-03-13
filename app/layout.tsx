@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <SessionAuthProvider>
           <NotificationProvider>
-          <CartProvider>{children}</CartProvider>\
+          <CartProvider>{children}</CartProvider>
           </NotificationProvider>
         </SessionAuthProvider>
       </body>
