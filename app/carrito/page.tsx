@@ -2,7 +2,7 @@
 
 import { useCart } from "../../context/cart-context"
 import { Header } from "../ui/header"
-import { Button } from "../ui/button"
+import { Button } from "../ui/components/button"
 import { useSession } from "next-auth/react"
 import { useNotification } from "../ui/notification"
 import { useEffect } from "react"
@@ -47,7 +47,7 @@ export default function CarritoPage() {
                     <Button onClick={() => updateQuantity(item.id, item.cantidad - 1)}>-</Button>
                     <span className="mx-2">{item.cantidad}</span>
                     <Button onClick={() => updateQuantity(item.id, item.cantidad + 1)}>+</Button>
-                    <Button variant="destructive" className="ml-4" onClick={() => removeItem(item.id)}>
+                    <Button variant="destructive" className="ml-4" onClick={() => removeItem()}>
                       Eliminar
                     </Button>
                   </div>

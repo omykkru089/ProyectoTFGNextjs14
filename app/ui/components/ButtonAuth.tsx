@@ -2,7 +2,7 @@
 
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import UserSkeleton from "../ui/Skeletons/UserSkeleton";
+import UserSkeleton from "../Skeletons/UserSkeleton";
 import { Suspense } from "react";
 import { useCart } from "@/context/cart-context";
 import { Save } from "lucide-react";

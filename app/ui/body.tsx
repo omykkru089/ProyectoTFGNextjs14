@@ -56,7 +56,7 @@ export function Body() {
         <section className='grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] p-[20px] bg-[#1f1f1f] pt-[20px] [box-shadow:0px_15px_20px_#640F8C] z-0 mb-[-40px] '
           key={index}
         >
-          <Link href={juego.link} className="grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] bg-[#1f1f1f]  ">
+          <Link href="{juego.link}" className="grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] bg-[#1f1f1f]  ">
           <div className="col-span-2 row-span-2 rounded-[25px] [transition:.3s] hover:scale-[1.02]">
           <img className='rounded-[25px] pl-2 bg-cover w-[405px] h-[240px] z-20 transition-opacity scale-[1.03]' src={juego.imagen_de_portada} alt={`${juego.nombre} imagen de portada`} /> 
           <iframe className='rounded-[25px] pl-2 mb-20 bg-cover w-[405px] h-[240px] relative top-[-240px] opacity-0 z-10 transition-opacity scale-[1.035] hover:opacity-100' src={juego.video}></iframe>

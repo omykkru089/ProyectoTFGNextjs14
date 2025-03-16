@@ -4,15 +4,14 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useSession } from "next-auth/react"
 import { useNotification } from "../app/ui/notification"
 import Cookies from "js-cookie"
+import { juego } from "@/app/lib/definitions"
 
 
 type CartItem = {
   id: number
-  juego?: {
-    id: number
-  }
-  nombre?: string
-  precio?: number
+  juego: juego
+  nombre: string
+  precio: number
   cantidad: number
 }
 
@@ -46,6 +45,7 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
     return cookieItems ? JSON.parse(cookieItems) : []
   }
 
+
   const addItem = (newItem: CartItem) => {
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === newItem.id)
@@ -71,6 +71,9 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
   }
 
   const removeItem = async () => {
+    
+
+
     if (!session?.user?.id) {
       showNotification("Debes iniciar sesión para eliminar un pedido", "error")
       return
@@ -217,7 +220,7 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
           console.log(carritoItems, "Items del carrito")
 
           // Combinar ítems de las cookies con los ítems de la base de datos
-          const combinedItems = [...carritoItems, ...cookieItems].reduce((acc, item) => {
+          const combinedItems = [...carritoItems, ...cookieItems].reduce<CartItem[]>((acc, item) => {
             const existingItem = acc.find((i) => i.id === item.juego?.id)
             if (existingItem) {
               existingItem.cantidad += item.cantidad
@@ -226,6 +229,7 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
                 id: item.juego?.id,
                 nombre: item.juego?.nombre,
                 precio: item.juego?.precio,
+                juego: item.juego, // Asegúrate de que `item.juego` tenga el tipo correcto
                 cantidad: item.cantidad,
               })
             }

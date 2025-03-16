@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import ButtonAuth from "./ButtonAuth";
+import ButtonAuth from "./components/ButtonAuth";
 
 
 export function Header() {
