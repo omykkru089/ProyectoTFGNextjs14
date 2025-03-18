@@ -54,12 +54,12 @@ export function Body() {
     <div className=" grid place-items-center w-full bg-[#0D0D0D]">
       {juegos.map((juego, index ) => (
         <section className='grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] p-[20px] bg-[#1f1f1f] pt-[20px] [box-shadow:0px_15px_20px_#640F8C] z-0 mb-[-40px] '
-          key={index}
+          key={index[0]}
         >
-          <Link href="{juego.link}" className="grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] bg-[#1f1f1f]  ">
+          <Link href={juego.link[0]} className="grid grid-cols-[200px_200px_150px] grid-rows-[100px_120px_90px] gap-x-[12px] gap-y-[17px] bg-[#1f1f1f]  ">
           <div className="col-span-2 row-span-2 rounded-[25px] [transition:.3s] hover:scale-[1.02]">
-          <img className='rounded-[25px] pl-2 bg-cover w-[405px] h-[240px] z-20 transition-opacity scale-[1.03]' src={juego.imagen_de_portada} alt={`${juego.nombre} imagen de portada`} /> 
-          <iframe className='rounded-[25px] pl-2 mb-20 bg-cover w-[405px] h-[240px] relative top-[-240px] opacity-0 z-10 transition-opacity scale-[1.035] hover:opacity-100' src={juego.video}></iframe>
+          <img className='rounded-[25px] pl-2 bg-cover w-[405px] h-[240px] z-20 transition-opacity scale-[1.03]' src={juego.imagen_de_portada[0]} alt={`${juego.nombre} imagen de portada`} /> 
+          <iframe className='rounded-[25px] pl-2 mb-20 bg-cover w-[405px] h-[240px] relative top-[-240px] opacity-0 z-10 transition-opacity scale-[1.035] hover:opacity-100' src={juego.video[0]} />
           </div>
           <div className={`${montserrat.className} grid place-items-center text-[#fff] text-xl font-bold col-start-3 row-start-2 h-[50px] right-1 relative top-[20px] bg-[#9f86c0a4] rounded-[15px] pb-0 [box-shadow:0px_0px_7px_#9F86C0]`}>
           {juego.nombre} {/* Ejemplo: Mostrar el nombre del juego */}
