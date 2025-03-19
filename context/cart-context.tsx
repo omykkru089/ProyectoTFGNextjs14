@@ -4,14 +4,14 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { useSession } from "next-auth/react"
 import { useNotification } from "../app/ui/notification"
 import Cookies from "js-cookie"
-import { juego } from "@/app/lib/definitions"
+import { Juego } from "@/app/lib/definitions"
 
 
 type CartItem = {
-  id: number
-  juego: juego
-  nombre: string
-  precio: number
+  id: number,
+  juego: Juego,
+  nombre: string,
+  precio: number,
   cantidad: number
 }
 
@@ -22,6 +22,7 @@ type CartContextType = {
   removeItem: () => void
   saveCart: () => Promise<void>
   loadCart: () => Promise<void>
+  addToCartFromDetail: (juego: Juego, cantidad: number) => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -245,17 +246,102 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
     }
   }
 
+  const addToCartFromDetail = async (juego: Juego, cantidad: number) => {
+    if (!session?.user?.id) {
+      showNotification("Debes iniciar sesión para añadir al carrito", "error");
+      return;
+    }
+
+    try {
+      // Verificar si hay un pedido activo
+      if (!pedidoId) {
+        const pedidoResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/pedidos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.user.token}`,
+          },
+          body: JSON.stringify({
+            userId: session.user.id,
+            fecha_creacion: new Date(),
+            estado: "pendiente",
+          }),
+        });
+
+        if (!pedidoResponse.ok) {
+          throw new Error("Error al crear el pedido");
+        }
+
+        const pedido = await pedidoResponse.json();
+        setPedidoId(pedido.id);
+      }
+
+      // Agregar el juego al carrito
+      const existingItem = items.find((item) => item.juego.id === juego.id);
+
+      if (existingItem) {
+        // Actualizar cantidad si el juego ya está en el carrito
+        const updatedCantidad = existingItem.cantidad + cantidad;
+
+        const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carrito/${existingItem.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.user.token}`,
+          },
+          body: JSON.stringify({ cantidad: updatedCantidad }),
+        });
+
+        if (!updateResponse.ok) {
+          throw new Error("Error al actualizar la cantidad del juego en el carrito");
+        }
+
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.juego.id === juego.id ? { ...item, cantidad: updatedCantidad } : item
+          )
+        );
+      } else {
+        // Agregar nuevo juego al carrito
+        const addResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carrito`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.user.token}`,
+          },
+          body: JSON.stringify({
+            pedidoId,
+            juegoId: juego.id,
+            cantidad,
+          }),
+        });
+
+        if (!addResponse.ok) {
+          throw new Error("Error al añadir el juego al carrito");
+        }
+
+        const newItem = await addResponse.json();
+        setItems((prevItems) => [...prevItems, { ...newItem, juego }]);
+      }
+
+      showNotification("Juego añadido al carrito", "success");
+    } catch (error) {
+      console.error("Error al añadir al carrito:", error);
+      showNotification("Error al añadir al carrito", "error");
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ items, addItem, updateQuantity, removeItem, saveCart, loadCart }}>
+    <CartContext.Provider value={{ items, addItem, updateQuantity, removeItem, saveCart, loadCart, addToCartFromDetail }}>
       {children}
     </CartContext.Provider>
   )
 }
 
-export function useCart() {
-  const context = useContext(CartContext)
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider")
+export const useCart = (): CartContextType => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart debe ser usado dentro de un CartProvider');
   }
-  return context
-}
+  return context;
+};

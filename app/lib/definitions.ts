@@ -1,5 +1,5 @@
 
-export type juego = {
+export type Juego = {
   id:number;
   nombre: string;
   descripcion: string;
