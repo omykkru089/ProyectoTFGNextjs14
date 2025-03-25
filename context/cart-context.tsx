@@ -247,19 +247,21 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
   }
 
   const addToCartFromDetail = async (juego: Juego, cantidad: number) => {
-    if (!session?.user?.id) {
+    if (!session?.user?.id || !session?.user?.token) {
       showNotification("Debes iniciar sesión para añadir al carrito", "error");
       return;
     }
-
+  
     try {
       // Verificar si hay un pedido activo
-      if (!pedidoId) {
+      let currentPedidoId = pedidoId;
+  
+      if (!currentPedidoId) {
         const pedidoResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/pedidos`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.user.token}`,
+            Authorization: `Bearer ${session.user.token}`, // Asegúrate de que el token sea válido
           },
           body: JSON.stringify({
             userId: session.user.id,
@@ -267,22 +269,25 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
             estado: "pendiente",
           }),
         });
-
+  
         if (!pedidoResponse.ok) {
+          const errorData = await pedidoResponse.json();
+          console.error("Error al crear el pedido:", errorData);
           throw new Error("Error al crear el pedido");
         }
-
+  
         const pedido = await pedidoResponse.json();
-        setPedidoId(pedido.id);
+        currentPedidoId = pedido.id;
+        setPedidoId(currentPedidoId); // Actualizar el estado con el nuevo pedidoId
       }
-
-      // Agregar el juego al carrito
+  
+      // Verificar si el juego ya está en el carrito
       const existingItem = items.find((item) => item.juego.id === juego.id);
-
+  
       if (existingItem) {
         // Actualizar cantidad si el juego ya está en el carrito
         const updatedCantidad = existingItem.cantidad + cantidad;
-
+  
         const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carrito/${existingItem.id}`, {
           method: "PUT",
           headers: {
@@ -291,11 +296,13 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
           },
           body: JSON.stringify({ cantidad: updatedCantidad }),
         });
-
+  
         if (!updateResponse.ok) {
+          const errorData = await updateResponse.json();
+          console.error("Error al actualizar la cantidad del juego en el carrito:", errorData);
           throw new Error("Error al actualizar la cantidad del juego en el carrito");
         }
-
+  
         setItems((prevItems) =>
           prevItems.map((item) =>
             item.juego.id === juego.id ? { ...item, cantidad: updatedCantidad } : item
@@ -310,20 +317,22 @@ export function CartProvider({ children }: { readonly children: ReactNode }) {
             Authorization: `Bearer ${session.user.token}`,
           },
           body: JSON.stringify({
-            pedidoId,
+            pedidoId: currentPedidoId,
             juegoId: juego.id,
             cantidad,
           }),
         });
-
+  
         if (!addResponse.ok) {
+          const errorData = await addResponse.json();
+          console.error("Error al añadir el juego al carrito:", errorData);
           throw new Error("Error al añadir el juego al carrito");
         }
-
+  
         const newItem = await addResponse.json();
         setItems((prevItems) => [...prevItems, { ...newItem, juego }]);
       }
-
+  
       showNotification("Juego añadido al carrito", "success");
     } catch (error) {
       console.error("Error al añadir al carrito:", error);
