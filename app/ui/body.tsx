@@ -8,12 +8,12 @@ import { useNotification } from './notification';
 import { useCart } from '@/context/cart-context';
 import { useSearch } from "@/context/search-context";
 
-export function Body() {
+export function Body({ search }: { search: string }) {
   const [juegos, setGames] = useState<Juego[]>([]); // Inicializa como un array vacío
   const [isLoading, setIsLoading] = useState(true);
+  const [hoveredId, setHoveredId] = useState<number | null>(null); // Nuevo estado
   const { showNotification } = useNotification();
   const { addToCart } = useCart();
-  const { search } = useSearch();
 
   useEffect(() => {
     const fetchJuegos = async () => {
@@ -22,7 +22,6 @@ export function Body() {
         const data = await res.json();
         setGames(data); // Limita a 6 juegos
       } catch (error) {
-        console.error("Error al cargar los juegos:", error);
         showNotification("Error al cargar los juegos", "error");
       } finally {
         setIsLoading(false);
@@ -63,6 +62,8 @@ export function Body() {
  
  <section
   key={juego.id}
+  onMouseEnter={() => setHoveredId(juego.id)}
+  onMouseLeave={() => setHoveredId(null)}
   className="[box-shadow:0px_15px_20px_#640F8C] grid gap-y-2 pt-[20px] bg-[#1f1f1f] p-[20px] "
 ><Link href={juego.link[0]} key={juego.id} className=" tablet:w-[650px]
     grid grid-cols-1 grid-rows-[repeat(5,min-content)] gap-y-2
@@ -81,6 +82,7 @@ export function Body() {
     alt={`${juego.nombre} imagen de portada`}
   />
   {/* Video superpuesto solo en hover */}
+  {hoveredId === juego.id && (
   <iframe
     className="
       rounded-[25px] bg-cover w-full h-[0px] tablet:absolute tablet:-top-[5px] tablet:left-0 tablet:w-[420px] tablet:h-[230px] 
@@ -89,7 +91,9 @@ export function Body() {
     "
     src={juego.video[0]}
     title={`Video de ${juego.nombre}`}
+    allow="autoplay; encrypted-media"
   />
+  )}
   </div>
 
   {/* Nombre */}

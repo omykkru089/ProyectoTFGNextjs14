@@ -3,18 +3,57 @@
 import { useCart } from "../../context/cart-context";
 import { Header } from "../ui/header";
 import { useNotification } from "../ui/notification";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa"; // Instala react-icons si no lo tienes
-
-
+import { loadStripe } from "@stripe/stripe-js";
+import { useSession } from "next-auth/react";
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 export default function CarritoPage() {
   const { items, updateQuantity, removeFromCart, fetchCart } = useCart();
   const { showNotification } = useNotification();
+  const { data: session } = useSession(); // Si usas next-auth
+  const [search, setSearch] = useState("");
 
-  // Actualizar los datos del carrito al entrar en la página
   useEffect(() => {
-    fetchCart(); // Llamar a la función `fetchCart` del contexto
+    fetchCart();
   }, []);
+
+  const handleCheckout = async () => {
+  // Guarda solo los datos relevantes y usa juegoId
+  localStorage.setItem("carritoItems", JSON.stringify(
+    items.map(item => ({
+      juegoId: item.juegoId || item.id, // usa juegoId si existe, si no usa id
+      nombre: item.nombre,
+      cantidad: item.cantidad,
+      precio: item.precio,
+      dispositivo: item.dispositivo,
+    }))
+  ));
+localStorage.setItem("userId", String(session?.user?.id ?? 1));
+  // Envía solo juegoId y cantidad al backend
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/pagos/checkout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: items.map(item => ({
+        id: item.juegoId || item.id,
+        nombre: item.nombre,
+        precio: item.precio,
+        cantidad: item.cantidad
+      })),
+      userId: session?.user?.id || 1
+    }),
+  });
+
+  const data = await res.json();
+console.log(data); // <-- ¿Qué sale aquí?
+if (!data.sessionId) {
+  alert("Error al crear la sesión de pago. Intenta de nuevo.");
+  return;
+}
+  const stripe = await stripePromise;
+  await stripe?.redirectToCheckout({ sessionId: data.sessionId });
+};
 
   const handleRemove = async (id: number) => {
     try {
@@ -41,7 +80,7 @@ export default function CarritoPage() {
 
   return (
     <>
-      <Header />
+      <Header search={search} setSearch={setSearch}/>
       <div className="container mx-auto px-2 py-4">
         <h1 className="text-2xl font-bold mb-4">Tu carrito</h1>
 
@@ -138,9 +177,10 @@ export default function CarritoPage() {
           ))}
         </div>
 
-        <div className="mt-4 text-left text-black">
-          <p className="text-xl font-bold">Total: {totalPrice.toFixed(2)}€</p>
-        </div>
+        <div className="mt-4 text-left text-black flex justify-between items-center">
+        <p className="text-xl font-bold">Total: {totalPrice.toFixed(2)}€</p>
+        <button onClick={handleCheckout}>Pagar</button>
+      </div>
       </div>
     </>
   );

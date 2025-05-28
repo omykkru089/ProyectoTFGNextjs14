@@ -21,7 +21,6 @@ const LoginPage = () => {
       redirect: false,
     });
 
-    console.log(responseNextAuth)
     if (responseNextAuth?.error) {
       setErrors(responseNextAuth.error.split(","));
       return;

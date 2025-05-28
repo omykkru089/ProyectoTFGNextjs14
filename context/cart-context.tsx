@@ -3,14 +3,17 @@
 import { createContext, useContext, useState } from "react";
 import { useNotification } from "../app/ui/notification";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 type CartItem = {
-  id: number;
+  id: number; // id del carrito
+  juegoId: number; // id real del juego
   nombre: string;
   precio: number;
   cantidad: number;
-  dispositivo: string; // Agregar el tipo de dispositivo
-  plataforma: string; // Agregar el tipo de plataforma
+  dispositivo: string;
+  plataforma: string;
+  
 };
 
 type CartContextType = {
@@ -27,10 +30,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const { showNotification } = useNotification();
   const { data: session } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [noPedidoActivo, setNoPedidoActivo] = useState(false); // NUEVO
 
   // Definir la función fetchCart
   const fetchCart = async () => {
-    if (!session) return;
+    if (!session || noPedidoActivo) return; // Si ya sabemos que no hay pedido, no pidas más
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carrito`, {
@@ -42,26 +46,27 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (!res.ok) {
         if (res.status === 404) {
           setItems([]);
+          setNoPedidoActivo(true); // Marca que no hay pedido activo
           return;
         }
         throw new Error("Error al cargar el carrito");
       }
 
       const data = await res.json();
-
-      // Procesar los datos para incluir los campos del juego
       const processedItems = data.map((item: any) => ({
         id: item.id,
+        juegoId: item.juego.id,
         nombre: item.juego.nombre,
         precio: item.juego.precio,
         cantidad: item.cantidad,
-        plataforma: item.juego.plataforma.nombre, // Incluir la plataforma
-        dispositivo: item.juego.dispositivo, // Incluir el dispositivo
+        plataforma: item.juego.plataforma.nombre,
+        dispositivo: item.juego.dispositivo,
       }));
 
       setItems(processedItems);
+      setNoPedidoActivo(false); // Si hay carrito, resetea el flag
     } catch (error) {
-      console.error(error);
+      showNotification("No se pudo cargar el carrito", "error");
     }
   };
 
@@ -82,25 +87,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       if (!res.ok) {
-        throw new Error("Error al agregar el juego al carrito");
+        const errorData = await res.json();
+        showNotification(errorData.message || "No se pudo agregar el juego al carrito", "error");
+        return;
       }
 
       const newItem = await res.json();
-      setItems((prevItems) => {
-        const existingItem = prevItems.find((item) => item.id === newItem.id);
-        if (existingItem) {
-          return prevItems.map((item) =>
-            item.id === newItem.id
-              ? { ...item, cantidad: item.cantidad + cantidad }
-              : item
-          );
-        }
-        return [...prevItems, newItem];
-      });
-
+      setNoPedidoActivo(false); // Permite volver a pedir el carrito
+      fetchCart(); // Actualiza el carrito tras añadir
       showNotification("Juego añadido correctamente", "success");
     } catch (error) {
-      console.error(error);
       showNotification("No se pudo agregar el juego al carrito", "error");
     }
   };
@@ -128,7 +124,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       );
       showNotification("Juego modificado correctamente", "success");
     } catch (error) {
-      console.error(error);
       showNotification("No se pudo actualizar la cantidad del producto", "error");
     }
   };
@@ -149,18 +144,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       setItems((prevItems) => prevItems.filter((item) => item.id !== carritoId));
       showNotification("Juego eliminado correctamente", "success");
     } catch (error) {
-      console.error(error);
       showNotification("No se pudo eliminar el producto del carrito", "error");
     }
   };
+  
+
+
 
   return (
     <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, fetchCart }}>
       {children}
     </CartContext.Provider>
-  );
-};
-
+  );}
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {

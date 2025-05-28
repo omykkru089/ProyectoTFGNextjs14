@@ -11,43 +11,51 @@ export default function PCPage() {
   const [plataformas, setPlataformas] = useState<string[]>([]);
   const [currentPlatform, setCurrentPlatform] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState(""); // <--- Añade este estado
   const itemsPerPage = 15; // 5 filas x 3 columnas
 
   useEffect(() => {
-    const fetchData = async () => {
-      const juegosRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/juegos`);
-      const plataformasRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/plataformas`);
-      const juegosData = await juegosRes.json();
-      const plataformasData = await plataformasRes.json();
+  const fetchData = async () => {
+    const juegosRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/juegos`);
+    const plataformasRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/plataformas`);
+    const juegosData = await juegosRes.json();
+    const plataformasData = await plataformasRes.json();
 
-      // Filtrar juegos y plataformas para PC
-      const juegosPC = juegosData.filter((juego: Juego) => juego.dispositivo === "PC");
-      const plataformasPC = plataformasData
-        .filter((plataforma: any) => plataforma.dispositivos === "PC")
-        .map((plataforma: any) => plataforma.nombre);
+    // Filtrar juegos y plataformas para PC
+    const juegosPC = juegosData.filter((juego: Juego) => juego.dispositivo === "PC");
+    const plataformasPC = plataformasData
+      .filter((plataforma: any) => plataforma.dispositivos === "PC")
+      .map((plataforma: any) => plataforma.nombre);
 
-      setJuegos(juegosPC);
-      setPlataformas(plataformasPC);
-    };
+    setJuegos(juegosPC);
+    setPlataformas(plataformasPC);
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   // Filtrar juegos por plataforma seleccionada
-  const filteredJuegos = currentPlatform
-    ? juegos.filter((juego) => juego.plataforma.nombre === currentPlatform)
-    : juegos;
+const filteredJuegos = currentPlatform
+  ? juegos.filter((juego) => juego.plataforma.nombre === currentPlatform)
+  : juegos;
 
-  // Calcular los juegos para la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentJuegos = filteredJuegos.slice(indexOfFirstItem, indexOfLastItem);
+// Filtrar por búsqueda
+const finalFilteredJuegos = search.trim() !== ""
+  ? filteredJuegos.filter((juego) =>
+      juego.nombre.toLowerCase().includes(search.toLowerCase())
+    )
+  : filteredJuegos;
 
-  const totalPages = Math.ceil(filteredJuegos.length / itemsPerPage);
+// Calcular los juegos para la página actual
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentJuegos = finalFilteredJuegos.slice(indexOfFirstItem, indexOfLastItem);
+
+const totalPages = Math.ceil(finalFilteredJuegos.length / itemsPerPage);
 
   return (
     <div>
-      <Header />
+      <Header search={search} setSearch={setSearch}/>
       <main className="bg-[#0D0D0D] min-h-screen text-[#fff]">
         <div className="container mx-auto px-4 py-8">
           <nav className="grid place-content-center [transition:all_1.5s]">

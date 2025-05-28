@@ -13,19 +13,6 @@ export default function ButtonAuth() {
   const { data: session, status } = useSession();
   const [itemCount, setItemCount] = useState(0); // Estado para el número total de juegos en el carrito
 
-  // Cargar los datos del carrito al iniciar sesión
-  useEffect(() => {
-    if (session) {
-      fetchCart(); // Llamar a fetchCart para cargar los datos del carrito
-    }
-  }, [session, fetchCart]);
-
-  // Calcular el número total de juegos en el carrito
-  useEffect(() => {
-    const totalItems = items.reduce((sum: number, item) => sum + item.cantidad, 0);
-    setItemCount(totalItems);
-  }, [items]); // Escuchar cambios en los elementos del carrito
-
   const handleSignOut = async () => {
     await signOut();
     window.location.href = "/"; // Redirigir a la pantalla de inicio

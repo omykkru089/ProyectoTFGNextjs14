@@ -11,13 +11,14 @@ export default function XboxPage() {
   const [plataformas, setPlataformas] = useState<string[]>([]);
   const [currentPlatform, setCurrentPlatform] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState(""); // Añadido
   const itemsPerPage = 15;
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/juegos`);
-      const data: Juego[] = await res.json(); // Declarar el tipo de `data`
-      const juegosXbox = data.filter((juego: Juego) => juego.dispositivo === "Xbox"); // Declarar el tipo de `juego`
+      const data: Juego[] = await res.json();
+      const juegosXbox = data.filter((juego: Juego) => juego.dispositivo === "Xbox");
       setJuegos(juegosXbox);
 
       const plataformasXbox = Array.from(new Set(juegosXbox.map((juego) => juego.plataforma.nombre)));
@@ -27,20 +28,29 @@ export default function XboxPage() {
     fetchData();
   }, []);
 
+  // Filtrar por plataforma
   const filteredJuegos = currentPlatform
     ? juegos.filter((juego) => juego.plataforma.nombre === currentPlatform)
     : juegos;
 
+  // Filtrar por búsqueda
+  const finalFilteredJuegos = search.trim() !== ""
+    ? filteredJuegos.filter((juego) =>
+        juego.nombre.toLowerCase().includes(search.toLowerCase())
+      )
+    : filteredJuegos;
+
+  // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentJuegos = filteredJuegos.slice(indexOfFirstItem, indexOfLastItem);
+  const currentJuegos = finalFilteredJuegos.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(filteredJuegos.length / itemsPerPage);
+  const totalPages = Math.ceil(finalFilteredJuegos.length / itemsPerPage);
 
   return (
     <div>
-      <Header />
-      <main className="bg-[#0D0D0D] text-[#fff]">
+      <Header search={search} setSearch={setSearch} />
+      <main className="bg-[#0D0D0D] min-h-screen text-[#fff]">
         <div className="container mx-auto px-4 py-8">
           <nav className="grid place-content-center [transition:all_0.5s]">
   <h1 className="text-2xl font-bold mb-4 grid place-content-center">Juegos de Xbox</h1>

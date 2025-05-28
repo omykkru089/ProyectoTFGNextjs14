@@ -20,9 +20,7 @@ const SobreMiPage = () => {
     const fetchData = async () => {
       try {
         const data = await fetchUsuarios();
-        console.log('Usuarios obtenidos:', data); // Agregar este log
         const currentUser = data.find((u: users) => u.email === session?.user?.email);
-        console.log('Usuario actual:', currentUser); // Agregar este log
         setUser(currentUser || null);
         if (currentUser) {
           setName(currentUser.nombre);
@@ -71,11 +69,9 @@ const SobreMiPage = () => {
         alert('Usuario actualizado con éxito');
       } else {
         const errorData = await res.json();
-        console.error('Error al actualizar el usuario:', errorData);
         alert('Error al actualizar el usuario (No se ha podido actualizar el usuario)');
       }
     } catch (err) {
-      console.error('Error al actualizar el usuario:', err);
       alert('Error al actualizar el usuario (No ha encontrado el usuario)');
     }
   };
@@ -124,10 +120,7 @@ const SobreMiPage = () => {
         justify-center p-0 sm:justify-start sm:p-2 sm:px-3 lg:justify-start lg:p-2 lg:px-3
       '
     >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-</svg>
-
+      <HomeIcon className='h-7 w-7 mr-0 sm:h-5 sm:w-5 sm:mr-1 lg:h-5 lg:w-5 lg:mr-1' />
       <span className='hidden sm:inline lg:inline'>Home</span>
     </Link>
     <Link

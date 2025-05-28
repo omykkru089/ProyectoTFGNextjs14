@@ -23,6 +23,7 @@ export default function DinamicPage({ params }: { readonly params: Params }) {
   const [currentPlatform, setCurrentPlatform] = useState<string | null>(null);
   const { addToCart } = useCart();
   const { showNotification } = useNotification();
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchJuego = async () => {
@@ -48,7 +49,7 @@ export default function DinamicPage({ params }: { readonly params: Params }) {
           nombre: data.nombre,
           descripcion: data.descripcion,
           categoria: data.categoria?.nombre ?? "Sin categoría",
-          plataforma: data.plataforma?.nombre ?? "Sin plataforma",
+          plataforma: data.plataforma ?? { id: 0, nombre: "Sin plataforma" },
           precio: data.precio,
           fecha_de_lanzamiento: data.fecha_de_lanzamiento,
           desarrollador: data.desarrollador?.nombre ?? "Desarrollador desconocido",
@@ -71,7 +72,6 @@ export default function DinamicPage({ params }: { readonly params: Params }) {
          setCurrentPlatform(data.plataforma?.nombre ?? null);
 
       } catch (error) {
-        console.error("Error al cargar el juego:", error);
         showNotification("Error al cargar los detalles del juego", "error");
       } finally {
         setIsLoading(false);
@@ -113,7 +113,7 @@ export default function DinamicPage({ params }: { readonly params: Params }) {
 
   return (
     <>
-      <Header />
+      <Header search={search} setSearch={setSearch}/>
       <div className="w-full min-h-screen bg-black flex flex-col items-center">
         <div className="w-full max-w-[1000px] mx-auto px-2 tablet:px-6 py-4">
           {/* Galería y datos principales */}
@@ -166,13 +166,13 @@ export default function DinamicPage({ params }: { readonly params: Params }) {
               <div className="flex flex-col items-center text-[#2C1C43]">
                 <div className="flex flex-wrap gap-2 mt-3 bg-[#ffffff5b] p-2 tablet:p-4 rounded-md border-2 border-[#A167D8]">
                   <span className="[filter:drop-shadow(0px_0px_2px_#A167D8)]">
-                    <Link href={`${juego.dispositivo.toLowerCase()}`} className="hover:text-[#DDBBF7] transition">
-                      {juego.plataforma || "Plataforma Desconocida"}
-                    </Link>
+                   <Link href={`${juego.dispositivo.toLowerCase()}`} className="hover:text-[#DDBBF7] transition">
+                      {juego?.plataforma?.nombre}
+                   </Link>
                   </span>
-                  <img src="/check.png" alt="check" className="w-4 h-4 mt-1 [filter:drop-shadow(0px_0px_2px_green)]" />
+                  <Image width={100} height={100} src="/check.png" alt="check" className="w-4 h-4 mt-1 [filter:drop-shadow(0px_0px_2px_green)]" />
                   <span className="[filter:drop-shadow(0px_0px_2px_#A167D8)]">En stock</span>
-                  <img src="/check.png" alt="check" className="w-4 h-4 mt-1 [filter:drop-shadow(0px_0px_2px_green)]" />
+                  <Image width={100} height={100} src="/check.png" alt="check" className="w-4 h-4 mt-1 [filter:drop-shadow(0px_0px_2px_green)]" />
                   <span className="[filter:drop-shadow(0px_0px_2px_#A167D8)]">Descarga digital</span>
                 </div>
               </div>

@@ -6,16 +6,15 @@ import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { categoria, desarrollador, editorial, plataforma, users } from '../lib/definitions';
 import { fetchUsuarios } from '../lib/data';
-import SwaggerUI from "swagger-ui-react"
-import 'swagger-ui-react/swagger-ui.css'
 import Modal from './components/Modal';
 import bcrypt from 'bcryptjs'; // Importar bcrypt
-import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
-
+import { FaTrash, FaEdit, FaPlus, FaFileImport } from "react-icons/fa";
+import Papa from "papaparse";
+import type { ParseResult } from 'papaparse';
 
 const Page = () => {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<users | null>(null);
   const [activeTab, setActiveTab] = useState('juegos'); // Tab activa
   const [data, setData] = useState<TableItem[]>([]); // Datos de la tabla activa
   const [selectedItem, setSelectedItem] = useState<any | null>(null); // Registro seleccionado
@@ -27,6 +26,12 @@ const Page = () => {
   const [plataformas, setPlataformas] = useState<plataforma[]>([]);
   const [editoriales, setEditoriales] = useState<editorial[]>([]);
   const [desarrolladores, setDesarrolladores] = useState<desarrollador[]>([]);
+  
+
+  // Notificación simple (puedes mejorarla con un modal o toast)
+function showNotification(msg: string, type: "success" | "error") {
+  alert(`${type === "success" ? "✔️" : "❌"} ${msg}`);
+}
 
   // Definir un tipo para los datos
   type TableItem = {
@@ -34,6 +39,85 @@ const Page = () => {
     nombre?: string;
     [key: string]: any; // Permitir otras propiedades dinámicas
   };
+
+  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: async (results: any) => {
+      try {
+
+        // Detecta si la tab activa es 'juegos' y transforma los campos necesarios
+    let dataToSend = results.data;
+    if (activeTab === 'users') {
+  // Cifra la contraseña de cada usuario antes de enviar
+  dataToSend = await Promise.all(
+    dataToSend.map(async (row: any) => {
+      const newRow = { ...row };
+      if (newRow.password) {
+        newRow.password = await bcrypt.hash(newRow.password, 10);
+      }
+      return newRow;
+    })
+  );
+}
+    if (activeTab === 'juegos') {
+      const arrayFields = [
+        'descripcion',
+        'idiomas',
+        'imagen_de_portada',
+        'video',
+        'requisitos_del_sistema',
+        'link',
+      ];
+      dataToSend = dataToSend.map((row: any) => {
+  const newRow = { ...row };
+  arrayFields.forEach((field) => {
+    if (typeof newRow[field] === 'string') {
+      if (newRow[field].includes(',')) {
+        newRow[field] = newRow[field].split(',').map((item: string) => item.trim());
+      } else if (newRow[field].trim() === '') {
+        newRow[field] = [];
+      } else {
+        newRow[field] = [newRow[field].trim()];
+      }
+    } else if (!Array.isArray(newRow[field])) {
+      newRow[field] = [];
+    }
+  });
+  return newRow;
+});
+    }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${activeTab}/bulk`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+      body: JSON.stringify(dataToSend),
+    });
+        if (!res.ok) throw new Error("Error al importar registros");
+        showNotification("Registros importados correctamente", "success");
+        // Recarga los datos
+        const updatedData = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${activeTab}`, {
+          headers: {
+            Authorization: `Bearer ${session?.user?.token}`,
+          },
+        });
+        const result = await updatedData.json();
+        setData(result);
+      } catch (error) {
+        showNotification("Error al importar registros", "error");
+      }
+    },
+    error: () => {
+      showNotification("Error al leer el archivo CSV", "error");
+    },
+  });
+};
 
   // Cargar datos de las tablas relacionadas
   useEffect(() => {
@@ -187,7 +271,9 @@ const Page = () => {
       setSelectedItem(null);
     } catch (error) {
       console.error('Error al eliminar el registro:', error);
-      alert(error.message || 'Error al eliminar el registro');
+         if (error instanceof Error) {
+     console.log(error.message);
+   }
     }
   };
 
@@ -325,9 +411,17 @@ const Page = () => {
     const [formData, setFormData] = useState(initialData || {});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
-    };
+  const { name, value } = e.target;
+  // Si el campo es uno de los selectores, convierte el valor a número
+  if (
+    activeTab === 'juegos' &&
+    ['categoria', 'plataforma', 'editorial', 'desarrollador'].includes(name)
+  ) {
+    setFormData({ ...formData, [name]: Number(value) });
+  } else {
+    setFormData({ ...formData, [name]: value });
+  }
+};
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -360,21 +454,20 @@ const Page = () => {
               </label>
               {activeTab === 'juegos' && ['categoria', 'plataforma', 'editorial', 'desarrollador'].includes(key) ? (
                 <select
-                  id={key}
-                  name={key}
-                  value={formData[key] || ''}
-                  onChange={handleChange}
-                  className="border p-2 w-full"
-                >
-                  <option value="">Seleccionar {key}</option>
-                  {(key === 'categoria' ? categorias : key === 'plataforma' ? plataformas : key === 'editorial' ? editoriales : desarrolladores).map(
-                    (option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.nombre}
-                      </option>
-                    )
-                  )}
-                </select>
+  id={key}
+  name={key}
+  value={formData[key] || ''}
+  onChange={handleChange}
+  className="border p-2 w-full"
+>
+  <option value="">Seleccionar {key}</option>
+  {(key === 'categoria' ? categorias : key === 'plataforma' ? plataformas : key === 'editorial' ? editoriales : desarrolladores).map(
+    (option) => (
+      <option key={option.id} value={option.id}>
+        {option.nombre}
+      </option>
+  ))}
+</select>
               ) : (
                 <input
                   id={key}
@@ -415,7 +508,7 @@ const Page = () => {
         <>
           <header className='h-[50px] w-full flex z-20 bg-gray-950 fixed'>
             <Link href="/"><Image src="/GameShop.png" alt="icono de la web" width={400} height={400} className='w-[100px] h-[80px] relative top-[-15px]' /></Link>
-            <h1 className='text-white absolute right-[32px] top-[11px]'>{user.nombre}</h1>
+            <h1 className='text-white absolute right-[32px] top-[11px]'>{user.nombre || "Como me llamo?"}</h1>
           </header>
           <div className="flex h-screen">
             {/* Nav lateral responsive con animación */}
@@ -465,27 +558,55 @@ const Page = () => {
               <div className="w-full max-w-[1200px] p-2 tablet:p-4">
                 {/* Header Panel y botón añadir */}
                 <header className="flex justify-between items-center mb-4">
-                  <h1 className="text-2xl tablet:text-xl desktop:text-2xl font-bold [transition:.3s]">Panel de Administración</h1>
-                  {/* Botón añadir adaptativo */}
-                  <button
-                    onClick={() => setIsAdding(true)}
-                    className="
-                      bg-blue-500 text-white px-4 py-2 rounded tablet:px-3 tablet:py-1 tablet:text-sm
-                      hidden min-[761px]:flex items-center gap-2 [transition:.3s]
-                    "
-                  >
-                    <FaPlus className="tablet:text-base desktop:text-lg" />
-                    <span className="hidden tablet:inline">Añadir {activeTab.slice(0, -1)}</span>
-                  </button>
-                  {/* Botón añadir móvil */}
-                  <button
-                    onClick={() => setIsAdding(true)}
-                    className="bg-blue-500 text-white p-2 rounded flex min-[761px]:hidden items-center [transition:.3s]"
-                    aria-label="Añadir"
-                  >
-                    <FaPlus size={18} />
-                  </button>
-                </header>
+  <h1 className="text-2xl tablet:text-xl desktop:text-2xl font-bold [transition:.3s]">Panel de Administración</h1>
+  <div className="flex gap-2">
+    {/* Botón Importar CSV adaptativo */}
+    <button
+      className="
+        bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded tablet:px-3 tablet:py-1 tablet:text-sm
+        hidden min-[761px]:flex items-center gap-2 [transition:.3s]
+      "
+      onClick={() => document.getElementById("csv-input")?.click()}
+    >
+      <FaFileImport className="tablet:text-base desktop:text-lg" />
+      <span className="hidden tablet:inline">Importar CSV</span>
+    </button>
+    {/* Botón Importar CSV móvil */}
+    <button
+      className="bg-purple-700 hover:bg-purple-800 text-white p-2 rounded flex min-[761px]:hidden items-center [transition:.3s]"
+      onClick={() => document.getElementById("csv-input")?.click()}
+      aria-label="Importar CSV"
+    >
+      <FaFileImport size={18} />
+    </button>
+    <input
+      id="csv-input"
+      type="file"
+      accept=".csv"
+      style={{ display: "none" }}
+      onChange={handleImportCSV}
+    />
+    {/* Botón añadir adaptativo */}
+    <button
+      onClick={() => setIsAdding(true)}
+      className="
+        bg-blue-500 text-white px-4 py-2 rounded tablet:px-3 tablet:py-1 tablet:text-sm
+        hidden min-[761px]:flex items-center gap-2 [transition:.3s]
+      "
+    >
+      <FaPlus className="tablet:text-base desktop:text-lg" />
+      <span className="hidden tablet:inline">Añadir {activeTab.slice(0, -1)}</span>
+    </button>
+    {/* Botón añadir móvil */}
+    <button
+      onClick={() => setIsAdding(true)}
+      className="bg-blue-500 text-white p-2 rounded flex min-[761px]:hidden items-center [transition:.3s]"
+      aria-label="Añadir"
+    >
+      <FaPlus size={18} />
+    </button>
+  </div>
+</header>
 
                 {/* Buscador */}
                 <input
@@ -531,18 +652,30 @@ const Page = () => {
                     </thead>
                     <tbody>
                       {filteredData.map((item) => (
-                        <tr
-                          key={item.id}
-                          className={`[transition:.3s] cursor-pointer ${selectedItem === item ? 'bg-purple-200' : 'bg-gray-100'}`}
-                          onClick={() => setSelectedItem(item)}
-                        >
-                          {Object.entries(item).map(([key, value], index) => (
-                            <td key={index} className="border border-gray-300 px-2 py-1 text-base tablet:text-sm [transition:.3s]">
-                              {typeof value === 'object' && value !== null
-                                ? JSON.stringify(value)
-                                : value}
-                            </td>
-                          ))}
+    <tr
+      key={item.id}
+      className={`[transition:.3s] cursor-pointer ${selectedItem === item ? 'bg-purple-200' : 'bg-gray-100'}`}
+      onClick={() => setSelectedItem(item)}
+    >
+      {Object.entries(item).map(([key, value], index) => (
+        <td key={index} className="border border-gray-300 px-2 py-1 text-base tablet:text-sm [transition:.3s]">
+          {activeTab === 'carrito' && key === 'juego' && typeof value === 'object' && value !== null ? (
+            // Mostrar solo los campos interesantes del juego
+            <div>
+              <div><b>ID:</b> {value.id}</div>
+              <div><b>Nombre:</b> {value.nombre}</div>
+              <div><b>Dispositivo:</b> {value.dispositivo}</div>
+              <div><b>Plataforma:</b> {value.plataforma?.nombre}</div>
+              <div><b>Precio:</b> {value.precio} €</div>
+              {/* Puedes añadir aquí más campos si lo ves útil */}
+            </div>
+          ) : (
+            typeof value === 'object' && value !== null
+              ? JSON.stringify(value)
+              : value
+          )}
+        </td>
+      ))}
                           <td className="border border-gray-300 px-2 py-1">
                             <div className="flex gap-2">
                               {/* Tablet/Desktop: iconos en tablet, texto en desktop */}
@@ -605,12 +738,22 @@ const Page = () => {
                       </div>
                       {/* Campos adicionales */}
                       {Object.entries(item).filter(([key]) => key !== 'nombre').map(([key, value]) => (
-                        <div key={key} className="flex justify-between bg-[#d8d8d832] rounded p-2">
-                          <span className="text-sm">{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
-                          <span className="text-sm break-all">
-                            {typeof value === 'object' && value !== null
-                              ? JSON.stringify(value)
-                              : value}
+  <div key={key} className="flex justify-between bg-[#d8d8d832] rounded p-2">
+    <span className="text-sm">{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+    <span className="text-sm break-all">
+      {activeTab === 'carrito' && key === 'juego' && typeof value === 'object' && value !== null ? (
+        <div>
+          <div><b>ID:</b> {value.id}</div>
+          <div><b>Nombre:</b> {value.nombre}</div>
+          <div><b>Dispositivo:</b> {value.dispositivo}</div>
+          <div><b>Plataforma:</b> {value.plataforma?.nombre}</div>
+          <div><b>Precio:</b> {value.precio} €</div>
+        </div>
+      ) : (
+        typeof value === 'object' && value !== null
+          ? JSON.stringify(value)
+          : value
+      )}
                           </span>
                         </div>
                       ))}
